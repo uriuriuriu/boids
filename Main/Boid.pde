@@ -1,5 +1,5 @@
 class Boid{
-	private String aa = "aaaa";
+	private String aa = "acaa";
 	public String bb = "bbbb";
 	Boid(){
 		fill(155, 255);

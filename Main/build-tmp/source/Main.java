@@ -14,19 +14,23 @@ import java.io.IOException;
 
 public class Main extends PApplet {
 
+public static final int NUM_POINT = 100;
+public static ArrayList<Boid> boids = new ArrayList<Boid>();
+
 public void setup() {size(512, 512);
 	background(130, 255);
 	fill(255, 150);
 	ellipse(width/2, height/2, 30, 30);
 	Boid boid = new Boid();
-	println("var: " + boid.bb);
+	boids.add(boid);
+	println("var: " + boids.get(0).aa);
 }
 
 public void draw() {
 
 }
 class Boid{
-	private String aa = "aaaa";
+	private String aa = "acaa";
 	public String bb = "bbbb";
 	Boid(){
 		fill(155, 255);
