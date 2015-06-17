@@ -26,7 +26,7 @@ public void setup() {size(512, 512);
 		boid.SetRandom(width, height);
 		boids.add(boid);
 	}
-	println("boids.get(0).aa: " + boids.get(0).aa);
+//	println("boids.get(0).aa: " + boids.get(0).aa);
 }
 
 public void draw() {
@@ -41,9 +41,7 @@ public void draw() {
 //	Boid boid = boids.get(0);
 }
 class Boid{
-	private String aa = "acaa";
-	public String bb = "bbbb";
-	private static final float W = 2;
+	private static final float W = 4;
 	private static final float H = 10;
 	public PVector pos = new PVector(0,0);
 	public PVector vPos = new PVector(0,0);
@@ -61,10 +59,7 @@ class Boid{
 		beginShape();
 		translate(pos.x, pos.y);
 		rotate(atan2(vPos.y, vPos.x));
-		// vertex(W, -H/2);
-		// vertex(0, H/2);
-		// vertex(-W, -H/2);
-		vertex(H/2, W/2);
+		vertex(H/2, 0);
 		vertex(-H/2, -W/2);
 		vertex(-H/2, W/2);
 		endShape(CLOSE);
@@ -72,7 +67,7 @@ class Boid{
 	}
 
 	public void SetRandom(float w, float h){
-//		pos.set(random(w), random(h));
+		pos.set(random(w), random(h));
 		vPos.set(random(10), random(10));
 	}
 };

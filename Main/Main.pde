@@ -10,7 +10,7 @@ void setup() {size(512, 512);
 		boid.SetRandom(width, height);
 		boids.add(boid);
 	}
-	println("boids.get(0).aa: " + boids.get(0).aa);
+//	println("boids.get(0).aa: " + boids.get(0).aa);
 }
 
 void draw() {
