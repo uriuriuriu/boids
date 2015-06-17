@@ -42,9 +42,10 @@ class Boid{
 	private static final float W = 4;
 	private static final float H = 10;
 	public PVector _pos = new PVector(0,0);
-	public PVector _aPos = new PVector(0,0);
-	public PVector _vPos = new PVector(0,0);
-	public PVector _vMAX = new PVector(10,10);
+	public float _angle = random(0, 360);
+	public float _aPos = 0;
+	public float _vPos = 0;
+	public float _vMAX = 10;
 	Boid(){
 		fill(55, 255);
 		DrawPoint();
@@ -52,17 +53,15 @@ class Boid{
 
 	public void draw() {
 		if((_lifeCount % 200) == 0){
-//			SetRandomA();
-			_aPos.set(-_aPos.x, -_aPos.y);
+			SetRandomA();
+
 		}
 
 
-		_vPos.add(_aPos);
-		if(_vMAX.x < _vPos.x)_vPos.x = _vMAX.x;
-		if(_vMAX.y < _vPos.y)_vPos.y = _vMAX.y;
-		if(_vPos.x < -_vMAX.x)_vPos.x = -_vMAX.x;
-		if(_vPos.y < -_vMAX.y)_vPos.y = -_vMAX.y;
-		_pos.add(_vPos);
+		_vPos += _aPos;
+		if(_vMAX < _vPos)_vPos = _vMAX;
+		if(_vPos < -_vMAX)_vPos = -_vMAX;
+		_pos.add(_vPos * cos(_angle), _vPos * sin(_angle), 0);
 		if(_pos.x < 0)_pos.x += width;
 		if(_pos.y < 0)_pos.y += height;
 		if(width < _pos.x)_pos.x -= width;
@@ -75,11 +74,10 @@ class Boid{
 		pushMatrix();
 		beginShape();
 		translate(_pos.x, _pos.y);
-		float scaleSize = (_vPos.x + _vPos.y)*0.05f;
-//		if(scaleSize < 0)scaleSize *= -1;
+		float scaleSize = _vPos * 0.05f;
 		scaleSize = scaleSize * scaleSize + 0.4f;
 		scale(scaleSize);
-		rotate(atan2(_vPos.y, _vPos.x));
+		rotate(_angle);
 		vertex(H/2, 0);
 		vertex(-H/2, -W/2);
 		vertex(-H/2, W/2);
@@ -90,11 +88,13 @@ class Boid{
 	public void SetRandom(){
 		_pos.set(random(width), random(height));
 		SetRandomA();
-//		_vPos.set(random(_vMAX.x), -random(_vMAX.y));
 	}
 
 	public void SetRandomA(){
-		_aPos.set(random(_vMAX.x)*0.08f, random(_vMAX.y)*0.08f);
+		_vPos = 0;
+		_aPos = random(0, _vMAX * 0.01f);
+		_angle = random(0, 1);
+		_angle = random(0, PI * 2);;
 	}
 };
   static public void main(String[] passedArgs) {
