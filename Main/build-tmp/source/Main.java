@@ -21,9 +21,9 @@ public void setup() {size(512, 512);
 	background(130);
 	fill(255, 150);
 	ellipse(width/2, height/2, 30, 30);
-	for (int i = 0; i < 10; ++i) {
+	for (int i = 0; i < 20; ++i) {
 		Boid boid = new Boid();
-		boid.SetRandom(width, height);
+		boid.SetRandom();
 		boids.add(boid);
 	}
 //	println("boids.get(0).aa: " + boids.get(0).aa);
@@ -33,32 +33,53 @@ public void draw() {
 	background(130);
 
 	for (Boid boid : boids) {
-		boid.pos.set(boid.pos.x + boid.vPos.x, boid.pos.y + boid.vPos.y);
-		if(512 < boid.pos.x){boid.pos.x -=512;}
-		if(512 < boid.pos.y){boid.pos.y -=512;}
 		boid.draw();
 	}
 //	Boid boid = boids.get(0);
 }
 class Boid{
+	private int _lifeCount = 0;
 	private static final float W = 4;
 	private static final float H = 10;
-	public PVector pos = new PVector(0,0);
-	public PVector vPos = new PVector(0,0);
+	public PVector _pos = new PVector(0,0);
+	public PVector _aPos = new PVector(0,0);
+	public PVector _vPos = new PVector(0,0);
+	public PVector _vMAX = new PVector(10,10);
 	Boid(){
 		fill(55, 255);
-		drawPoint();
+		DrawPoint();
 	}
 
 	public void draw() {
-		drawPoint();
+		if((_lifeCount % 200) == 0){
+//			SetRandomA();
+			_aPos.set(-_aPos.x, -_aPos.y);
+		}
+
+
+		_vPos.add(_aPos);
+		if(_vMAX.x < _vPos.x)_vPos.x = _vMAX.x;
+		if(_vMAX.y < _vPos.y)_vPos.y = _vMAX.y;
+		if(_vPos.x < -_vMAX.x)_vPos.x = -_vMAX.x;
+		if(_vPos.y < -_vMAX.y)_vPos.y = -_vMAX.y;
+		_pos.add(_vPos);
+		if(_pos.x < 0)_pos.x += width;
+		if(_pos.y < 0)_pos.y += height;
+		if(width < _pos.x)_pos.x -= width;
+		if(height < _pos.y)_pos.y -= height;
+		DrawPoint();
+		_lifeCount++;
 	}
 
-	public void drawPoint(){
+	public void DrawPoint(){
 		pushMatrix();
 		beginShape();
-		translate(pos.x, pos.y);
-		rotate(atan2(vPos.y, vPos.x));
+		translate(_pos.x, _pos.y);
+		float scaleSize = (_vPos.x + _vPos.y)*0.05f;
+//		if(scaleSize < 0)scaleSize *= -1;
+		scaleSize = scaleSize * scaleSize + 0.4f;
+		scale(scaleSize);
+		rotate(atan2(_vPos.y, _vPos.x));
 		vertex(H/2, 0);
 		vertex(-H/2, -W/2);
 		vertex(-H/2, W/2);
@@ -66,9 +87,14 @@ class Boid{
 		popMatrix();
 	}
 
-	public void SetRandom(float w, float h){
-		pos.set(random(w), random(h));
-		vPos.set(random(10), random(10));
+	public void SetRandom(){
+		_pos.set(random(width), random(height));
+		SetRandomA();
+//		_vPos.set(random(_vMAX.x), -random(_vMAX.y));
+	}
+
+	public void SetRandomA(){
+		_aPos.set(random(_vMAX.x)*0.08f, random(_vMAX.y)*0.08f);
 	}
 };
   static public void main(String[] passedArgs) {
