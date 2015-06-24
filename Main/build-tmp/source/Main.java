@@ -54,27 +54,50 @@ class Boid{
 	public void draw() {
 		if((_lifeCount % 200) == 0){
 			SetRandomA();
-
 		}
 
-
-		_vPos += _aPos;
-		if(_vMAX < _vPos)_vPos = _vMAX;
-		if(_vPos < -_vMAX)_vPos = -_vMAX;
-		_pos.add(_vPos * cos(_angle), _vPos * sin(_angle), 0);
-		if(_pos.x < 0)_pos.x += width;
-		if(_pos.y < 0)_pos.y += height;
-		if(width < _pos.x)_pos.x -= width;
-		if(height < _pos.y)_pos.y -= height;
+		CalcPosition();
 		DrawPoint();
 		_lifeCount++;
+	}
+
+	public void CalcPosition(){
+		_vPos += _aPos;
+		// \u901f\u5ea6\u4e0a\u9650
+		if(_vMAX < _vPos)_vPos = _vMAX;
+		if(_vPos < -_vMAX)_vPos = -_vMAX;
+		// \u5ea7\u6a19\u66f4\u65b0
+		_pos.add(_vPos * cos(_angle), _vPos * sin(_angle), 0);
+		// if(_pos.x < 0)_pos.x += width;
+		// if(_pos.y < 0)_pos.y += height;
+		// if(width < _pos.x)_pos.x -= width;
+		// if(height < _pos.y)_pos.y -= height;
+		if(_pos.x < 0){
+			_pos.x = -_pos.x;
+			MirrorAngle(PI*0.5f);
+		}
+		if(_pos.y < 0){
+			_pos.y = -_pos.y;
+			MirrorAngle(0);
+		}
+		if(width  < _pos.x){
+			_pos.x += width  - _pos.x;
+			MirrorAngle(PI*0.5f);
+		}
+		if(height < _pos.y){
+			_pos.y += height - _pos.y;
+			MirrorAngle(0);
+		}
+	}
+	public void MirrorAngle(float wallAngle){
+		_angle = wallAngle * 2 - _angle;
 	}
 
 	public void DrawPoint(){
 		pushMatrix();
 		beginShape();
 		translate(_pos.x, _pos.y);
-		float scaleSize = _vPos * 0.05f;
+		float scaleSize = _vPos * 0.1f;
 		scaleSize = scaleSize * scaleSize + 0.4f;
 		scale(scaleSize);
 		rotate(_angle);
@@ -93,7 +116,6 @@ class Boid{
 	public void SetRandomA(){
 		_vPos = 0;
 		_aPos = random(0, _vMAX * 0.01f);
-		_angle = random(0, 1);
 		_angle = random(0, PI * 2);;
 	}
 };
